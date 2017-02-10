@@ -1,0 +1,6 @@
+@font-face {
+    font-family: Gidole;
+    src: url(fonts/Gidole-Regular.otf);
+}
+
+*{ font-family: 'Gidole'; padding: 0; margin: 0; }
