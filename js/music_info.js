@@ -1,30 +1,34 @@
 $(document).ready(function(){
     var url = "";
-    var Song = 1;
-    var songTotal = songNames.length - 1;
+    var currentAlbum = 1;
+    var SongIndex = 1;
+    var songTotal = 1;
     var tweenSongs = 0;
     var songList = [];
     var songListNumber = 1;
     var PlayPauseState = 0;
 
-
     //Media Player Initialize & Misc. functions
     function listSongs() {
         $("#Musique").html("");
-        url = "Musiques/" + Song + ".mp3";
+        url = "Musiques/"+ SONGS[currentAlbum][0] +"/"+ SONGS[currentAlbum][1][SongIndex-1] +".mp3";
         $("#Musique").attr("src", url);
-        $(".mediaName span").html(songNames[Song]);
+        $(".mediaName span").html(SONGS[currentAlbum][0]+" - "+SONGS[currentAlbum][1][SongIndex-1]);
+
+        songTotal = SONGS[currentAlbum][1].length;
     }
 
     //Play/Pause
-    $(".playBtn").on("mousedown", function (){
+    $(".playBtn").on("click", function (){
+        console.log(PlayPauseState);
         if (PlayPauseState == 0) {
-            Musique.playbackRate = audioSpeed;
-            Musique.play();
+            $(this).addClass("playBtnON");
+            $("#Musique").get(0).play();
             PlayPauseState = 1;
         }
         else {
-            Musique.pause();
+            $(this).removeClass("playBtnON");
+            $("#Musique").get(0).pause();
             PlayPauseState = 0;
         }
     });
@@ -35,25 +39,25 @@ $(document).ready(function(){
         range: "min",
         min: 0,
         max: 100,
-        value: 100,
+        value: 50,
         step: 2,
         animate: true,
         slide: function (event, ui) {
-            Musique.volume = ui.value / 100;
+            $("#Musique").get(0).volume = ui.value / 100;
             console.log("test");
         }
     });
 
     $(".mediaVolume .ui-slider-handle").dblclick(function(){
         $(".mediaVolume").slider({ value: 100 });
-        Musique.volume = 1;
+        $("#Musique").get(0).volume = 1;
     });
 
     //TimeLine
     $("#Musique").bind("timeupdate", function (){
         var mediaTime = 0;
-        if (Musique.currentTime > 0) {
-            mediaTime = (100 / Musique.duration) * Musique.currentTime;
+        if ($("#Musique").get(0).currentTime > 0) {
+            mediaTime = (100 / $("#Musique").get(0).duration) * $("#Musique").get(0).currentTime;
         }
         $(".mediaTimelineInner").css("width", mediaTime + "%");
 
@@ -78,38 +82,43 @@ $(document).ready(function(){
     });
 
     $(".mediaTimelineOuter").click(function(e){
-        var clickPos = (e.pageX - 7) - this.offsetLeft;
+        var clickPos = (e.pageX) - this.offsetLeft;
         var maxWidth = $(this).width();
         var percentage = clickPos / maxWidth * 100;
         $(".mediaTimelineInner").css("width", percentage + "%");
-        Musique.currentTime = (percentage * Musique.duration)/100;
+        $("#Musique").get(0).currentTime = (percentage * $("#Musique").get(0).duration)/100;
     });
     $(".mediaTimelineOuter").mousedown(function(e){
         //$(".mediaTimelineOuter").animate({paddingTop: "10px"}, 200);
-
-        $(".mediaTimelineOuter").mousemove(function(e){
-            var clickPos = (e.pageX) - this.offsetLeft;
+        $("body").css("user-select", "none");
+        $("html").mousemove(function(e){
+            var clickPos = (e.pageX + 1) - this.offsetLeft;
             var maxWidth = $(this).width();
             var percentage = clickPos / maxWidth * 100;
             $(".mediaTimelineInner").css("width", percentage + "%");
             $(".mediaTimelineInnerSmall").css("width", percentage + "%");
-            Musique.currentTime = (percentage * Musique.duration)/100;
+            $("#Musique").get(0).currentTime = (percentage * $("#Musique").get(0).duration)/100;
         });
     });
     $(document).mouseup(function(){
-        $(".mediaTimelineOuter").animate({paddingTop: "0px"}, 200);
-        $(".mediaTimelineOuter").off("mousemove");
+        $("html").off("mousemove");
     });
 
     //AutoPlay Next Track
     $("#Musique").bind("ended", function (){
         //Play random track
-        Song++
-        listSongs();
-        Musique.play();
+        if(SongIndex==songTotal) {
+            $(".playBtn").click();
+            $("#Musique").stop();
+        } else {
+            SongIndex++;
+            listSongs();
+            $("#Musique").get(0).play();
+        }
     });
 
 
     //Launch Media Player Initialisation
+    $("#Musique").get(0).volume = 0.5;
     listSongs();
 });
