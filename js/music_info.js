@@ -20,11 +20,11 @@ $(document).ready(function(){
 
     //Play/Pause
     $(".playBtn").on("click", function (){
-        console.log(PlayPauseState);
         if (PlayPauseState == 0) {
             $(this).addClass("playBtnON");
             $("#Musique").get(0).play();
             PlayPauseState = 1;
+            visualizerStart();
         }
         else {
             $(this).removeClass("playBtnON");
@@ -44,7 +44,6 @@ $(document).ready(function(){
         animate: true,
         slide: function (event, ui) {
             $("#Musique").get(0).volume = ui.value / 100;
-            console.log("test");
         }
     });
 
