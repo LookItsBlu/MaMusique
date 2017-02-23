@@ -5,8 +5,7 @@ function initVisualizer() {
     canvas = document.getElementById("visualizer");
     ctx = canvas.getContext('2d');
     ctx.fillStyle = "#3f3f3f";
-    Musique = $("#Musique1").contentDocument;
-    console.log(Musique);
+    Musique = $("#Musique");
     /*analyser.smoothingTimeConstant = 0.8;
 
     source = context.createMediaElementSource(Musique);
@@ -46,17 +45,5 @@ function framelooper() {
 }
 
 $("document").ready(function(){
-    iframe = document.getElementById("Musique1");
-    iframe.src = "https://bandcamp.com/EmbeddedPlayer/album=3008457164/size=large/bgcol=ffffff/linkcol=0687f5/minimal=true/transparent=true/";
-    if (navigator.userAgent.indexOf("MSIE") > -1 && !window.opera) {
-      iframe.onreadystatechange = function(){
-        if (iframe.readyState == "complete"){
-            initVisualizer();
-        }
-      };
-    } else {
-      iframe.onload = function(){
-        initVisualizer();
-      };
-    }
+    initVisualizer();
 });
